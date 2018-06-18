@@ -30,9 +30,9 @@ Can add a packer_variable.json file to configure theses variables :
 ```
 Then run :
 ```
-packer build var-file .\packer_variables.json Win2016_Admin_VM.json
+packer build -var-file .\packer_variables.json .\Win2016_Admin_VM.json
 or 
-packer build var-file=.\packer_variables.json Win2016_Admin_VM.json
+packer build -var-file=.\packer_variables.json .\Win2016_Admin_VM.json
 ```
 
 Output :
