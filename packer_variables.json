@@ -1,0 +1,11 @@
+{
+    "region": "eu-west-3",
+    "projectname" : "Packer",
+    "owner" : "Eric",
+    "billing" : "Bibi",
+    "environment" : "Test",
+    "build_date" : "2018_06_18",
+    "choco_packages": "7zip putty.install sysinternals notepadplusplus git packer terraform vscode googlechrome pester",
+    "windowsfeatures": "Web-Server,Remote-Desktop-Services,RSAT,RSAT-RDS-Tools,RSAT-File-Services,Web-Mgmt-Console",
+    "powershell_psgallery_modules" : "PoshRSJob,Posh-SSH,posh-git"
+}

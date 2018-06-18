@@ -1,0 +1,131 @@
+{
+    "variables": {    
+        "region":"",
+        "build_date" : "",
+        "projectname" : "",
+        "owner" : "",
+        "billing" : "",
+        "environment" : "",
+        "choco_packages" : "",
+        "windowsfeatures" : "",
+        "powershell_psgallery_modules" : ""
+      },
+    "builders": [
+        {
+            "type": "amazon-ebs",
+            "region": "{{user `region`}}",
+            "instance_type": "t2.micro",
+            "ami_name": "win16admin-{{user `projectname`}}-{{user `build_date`}}-{{timestamp}}",
+            "user_data_file": "./scripts/SetUpWinRM.ps1",
+            "communicator": "winrm",
+            "winrm_username": "Administrator",
+            "winrm_use_ssl": true,
+            "winrm_insecure": true,
+            "source_ami_filter": {
+                "filters": {
+                  "name": "Windows_Server-2016-English-P3*"
+                },
+                "owners": ["801119661308"],
+                "most_recent": true
+            },
+            "tags": {
+                "madewith": "HashiCorp Packer {{packer_version}}",
+                "Usage" : "Windows 2016 Admin VM",
+                "projectname" : "{{user `projectname`}}",
+                "owner" : "{{user `owner`}}",
+                "billing" : "{{user `billing`}}",
+                "environment" : "{{user `environment`}}",
+                "build_date" : "{{user `build_date`}}",
+                "Base_AMI_Name": "{{ .SourceAMIName }}"
+              },
+              "run_tags" :{
+                "madewith": "HashiCorp Packer {{packer_version}}",
+                "Usage" : "Packer Temp Windows 2016 Admin VM",
+                "projectname" : "{{user `projectname`}}",
+                "owner" : "{{user `owner`}}",
+                "billing" : "{{user `billing`}}",
+                "environment" : "{{user `environment`}}",
+                "build_date" : "{{user `build_date`}}"
+              } 
+
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "windows-shell",
+              "inline": ["@\"%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe\" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command \"iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))\" && SET \"PATH=%PATH%;%ALLUSERSPROFILE%\\chocolatey\\bin\""]
+          },
+        {
+            "type": "windows-shell",
+              "inline": 
+              [
+                "choco install -y {{user `choco_packages`}}"
+              ]
+          },
+          {
+            "type": "powershell",
+              "inline": 
+              [
+                "Install-PackageProvider -Name NuGet -Force",
+                "Set-PSRepository -InstallationPolicy Trusted -Name PSGallery",
+                "Install-Module -Name {{user `powershell_psgallery_modules`}} -scope Allusers -verbose"
+              ]
+          },
+          {
+            "type": "powershell",
+            "inline": [
+              "Get-ScheduledTask -TaskName ServerManager | Disable-ScheduledTask",
+              "Add-WindowsFeature {{user `windowsfeatures`}} -verbose"
+            ]
+          },
+          {
+            "type": "file",
+            "source": "Templates\\index.html",
+            "destination": "C:\\inetpub\\wwwroot\\index.html"
+          },
+        {
+            "type": "file",
+            "source": "./tests",
+            "destination": "C:/Windows/Temp"
+        },
+        {
+            "type": "powershell",
+            "environment_vars": [
+                "windowsfeatures={{user `windowsfeatures`}}",
+                "powershell_psgallery_modules={{user `powershell_psgallery_modules`}}",
+                "choco_packages={{user `choco_packages`}}"
+              ],
+            "script": "./scripts/RunTests.ps1"
+        },
+        {
+            "type": "file",
+            "source": "TestResults.xml",
+            "destination": "TestResults_win16admin-{{user `projectname`}}-{{user `build_date`}}-{{timestamp}}.xml",
+            "direction": "download"
+        },
+        {
+            "type": "windows-restart"
+        },
+        {
+            "type": "windows-update",
+            "filters": [
+                "exclude:$_.Title -like '*Preview*'",
+                "include:$_.AutoSelectOnWebSites"
+            ]
+        },
+        {
+            "type": "windows-restart"
+        },
+        {
+            "type": "powershell",
+            "scripts": [
+                "./scripts/EC2Config.ps1"
+            ]
+        }
+    ],
+    "post-processors": [
+        {
+            "type": "manifest"
+        }
+    ]
+}
