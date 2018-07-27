@@ -14,7 +14,7 @@
         {
             "type": "amazon-ebs",
             "region": "{{user `region`}}",
-            "instance_type": "t2.micro",
+            "instance_type": "t2.medium",
             "ami_name": "win16admin-{{user `projectname`}}-{{user `build_date`}}-{{timestamp}}",
             "user_data_file": "./scripts/SetUpWinRM.ps1",
             "communicator": "winrm",
@@ -59,7 +59,7 @@
             "type": "windows-shell",
               "inline": 
               [
-                "choco install -y {{user `choco_packages`}}"
+                "choco install -y {{user `choco_packages`}} --ignorepackageexitcodes"
               ]
           },
           {
