@@ -1,0 +1,65 @@
+{
+    "variables": {    
+        "region":"",
+        "build_date" : "",
+        "projectname" : "",
+        "owner" : "",
+        "billing" : "",
+        "environment" : ""
+      },
+    "builders": [
+        {
+            "type": "amazon-ebs",
+            "region": "{{user `region`}}",
+            "instance_type": "t2.medium",
+            "ami_name": "{{user `projectname`}}-{{user `build_date`}}-{{timestamp}}",
+            "ssh_username": "ec2-user",
+            "source_ami_filter": {
+                "filters": {
+                  "name": "*docker-hvm*"
+                },
+                "owners": ["102837901569"],
+                "most_recent": true
+            },
+            "tags": {
+                "madewith": "HashiCorp Packer {{packer_version}}",
+                "Usage" : "Jenkins",
+                "projectname" : "{{user `projectname`}}",
+                "owner" : "{{user `owner`}}",
+                "billing" : "{{user `billing`}}",
+                "environment" : "{{user `environment`}}",
+                "build_date" : "{{user `build_date`}}",
+                "Base_AMI_Name": "{{ .SourceAMIName }}"
+              },
+              "run_tags" :{
+                "madewith": "HashiCorp Packer {{packer_version}}",
+                "Usage" : "Jenkins",
+                "projectname" : "{{user `projectname`}}",
+                "owner" : "{{user `owner`}}",
+                "billing" : "{{user `billing`}}",
+                "environment" : "{{user `environment`}}",
+                "build_date" : "{{user `build_date`}}"
+              } 
+
+        }
+    ],
+    "provisioners": [
+        {
+          "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E sh '{{ .Path }}'",
+          "inline_shebang": "/bin/sh -x",
+          "type": "shell",
+          "inline": [
+            "sleep 30",
+            "sudo su -",
+            "yum -y update",
+            "docker image pull jenkins/jenkins:lts",
+            "sleep 30"
+          ]
+    }
+],
+    "post-processors": [
+        {
+            "type": "manifest"
+        }
+    ]
+}

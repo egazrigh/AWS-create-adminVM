@@ -1,0 +1,8 @@
+{
+    "region": "eu-west-3",
+    "projectname" : "Jenkins_in_Docker",
+    "owner" : "Eric",
+    "billing" : "Bibi",
+    "environment" : "Test",
+    "build_date" : "2018_07_27"
+}
