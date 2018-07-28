@@ -6,7 +6,7 @@ A packer template to add a Jenkins Image inside a Docker AMI
 # Pre-requisite
 A Subscription , default VPC...
 
-# Usage
+# Prepare / update Jenkins container image
 
 Can add a packer_variable.json file to configure theses variables :
 ```JSON
@@ -21,10 +21,15 @@ Can add a packer_variable.json file to configure theses variables :
 ```
 Then run :
 ```
-packer build var-file .\packer_variables.json Jenkins_in_Docker_VM
+packer build var-file .\packer_variables.json 1-Create-Jenkins-AMI-in-Docker-image
+```
 
+# Deploy a Jenkins instance
 
-Output :
+terraform deploy
+
+Output : 
+- Jenkins-URL
 
 
 # Notes
