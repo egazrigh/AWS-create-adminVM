@@ -1,3 +1,6 @@
+.terraform
+*.tfstate
+*.tfstate.backup
 Win2016\TestResults*
 Win2016/TestResults*
 *TestResults_win16admin-Packer-2018_07_13-1531476253.xml
