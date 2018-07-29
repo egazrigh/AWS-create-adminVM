@@ -52,13 +52,13 @@ resource "aws_security_group_rule" "allow_all_out_on_jenkins" {
   cidr_blocks       = ["0.0.0.0/0"]
 }
 
-resource "aws_security_group_rule" "allow_ssh_in_for_me_on_jenkins" {
+resource "aws_security_group_rule" "allow_ssh_in_on_jenkins" {
   type              = "ingress"
   security_group_id = "${aws_security_group.jenkins_sg.id}"
   from_port         = 22
   to_port           = 22
   protocol          = "tcp"
-  cidr_blocks       = ["88.174.85.15/32"]
+  cidr_blocks       = ["0.0.0.0/0"]
 }
 
 data "aws_ami" "Docker_Jenkins_ami" {
