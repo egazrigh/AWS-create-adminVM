@@ -4,8 +4,8 @@
     "owner" : "Eric",
     "billing" : "Bibi",
     "environment" : "Test",
-    "build_date" : "2018_07_13",
-    "choco_packages": "7zip putty.install winscp.install sysinternals notepadplusplus git packer terraform vscode googlechrome pester anaconda3 vagrant",
+    "build_date" : "2018_08_27",
+    "choco_packages": "7zip putty.install winscp.install sysinternals notepadplusplus git packer terraform vscode googlechrome pester anaconda3 vagrant MobaXTerm",
     "windowsfeatures": "Web-Server,Remote-Desktop-Services,RSAT,RSAT-RDS-Tools,RSAT-File-Services,Web-Mgmt-Console",
     "powershell_psgallery_modules" : "PoshRSJob,Posh-SSH,posh-git"
 }
